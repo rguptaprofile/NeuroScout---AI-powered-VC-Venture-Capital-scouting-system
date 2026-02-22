@@ -24,7 +24,10 @@ export type EnrichmentResult = {
   whatTheyDo: string[];
   keywords: string[];
   derivedSignals: string[];
-  sources: { url: string; fetchedAt: string }[];
+  sources: Array<{
+    url: string;
+    fetchedAt: string;
+  }>;
 };
 
 export type SavedSearch = {

@@ -20,7 +20,7 @@ Precision AI scout for VC sourcing. Discover companies, enrich profiles with liv
 2. Create `.env.local` from `.env.example` and add keys:
    - `FIRECRAWL_API_KEY`
    - `OPENAI_API_KEY`
-   - `OPENAI_MODEL` (optional, defaults to `gpt-4o-mini`)
+   - `OPENAI_MODEL` (optional, defaults to `gpt-5.2`)
 3. Run the app:
    - `npm run dev`
 
