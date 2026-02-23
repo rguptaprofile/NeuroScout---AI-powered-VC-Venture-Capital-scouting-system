@@ -1,0 +1,8 @@
+[build]
+command = "npm run build"
+functions = "netlify/functions"
+publish = ".next/public"
+
+[dev]
+command = "npm run dev"
+targetPort = 3000

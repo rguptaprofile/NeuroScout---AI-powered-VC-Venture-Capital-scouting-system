@@ -1,5 +1,6 @@
 "use client";
 
+// Prevent static generation for this dynamic page with client-side state
 export const dynamic = "force-dynamic";
 
 import { useEffect, useMemo, useState } from "react";

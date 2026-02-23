@@ -1,5 +1,6 @@
 "use client";
 
+// Prevent static generation for this dynamic page with client-side routing
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
