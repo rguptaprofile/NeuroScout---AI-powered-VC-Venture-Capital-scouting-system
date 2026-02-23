@@ -1,18 +1,13 @@
 "use client";
 
+import { Suspense, useState, useEffect, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { companies } from "@/data/companies";
-import { Company, SavedSearch } from "@/types";
-import { loadSavedSearches, saveSavedSearches } from "@/lib/storage";
-import { formatDate } from "@/lib/utils";
+import { loadSavedSearches, saveSavedSearches } from "@/lib/savedSearches";
+import { companies, PAGE_SIZE, formatDate, unique } from "@/lib/companies";
+import type { Company, SavedSearch } from "@/lib/types";
 
-const PAGE_SIZE = 8;
-
-const unique = (values: string[]) => Array.from(new Set(values));
-
-export function CompaniesContent() {
+function CompaniesContentInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -56,7 +51,7 @@ export function CompaniesContent() {
   const filtered = useMemo(() => {
     const search = query.trim().toLowerCase();
     return companies
-      .filter((company) => {
+      .filter((company: Company) => {
         if (stage && company.stage !== stage) return false;
         if (sector && company.sector !== sector) return false;
         if (location && company.location !== location) return false;
@@ -86,10 +81,10 @@ export function CompaniesContent() {
     setPage(1);
   }, [query, stage, sector, location, tag, sortBy]);
 
-  const stages = unique(companies.map((company) => company.stage));
-  const sectors = unique(companies.map((company) => company.sector));
-  const locations = unique(companies.map((company) => company.location));
-  const tags = unique(companies.flatMap((company) => company.tags));
+  const stages = unique(companies.map((company: Company) => company.stage));
+  const sectors = unique(companies.map((company: Company) => company.sector));
+  const locations = unique(companies.map((company: Company) => company.location));
+  const tags = unique(companies.flatMap((company: Company) => company.tags));
 
   const saveSearch = () => {
     const name = window.prompt("Name this saved search");
@@ -147,7 +142,7 @@ export function CompaniesContent() {
                 onChange={(event) => setStage(event.target.value)}
               >
                 <option value="">All</option>
-                {stages.map((value) => (
+                {stages.map((value: string) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
@@ -162,7 +157,7 @@ export function CompaniesContent() {
                 onChange={(event) => setSector(event.target.value)}
               >
                 <option value="">All</option>
-                {sectors.map((value) => (
+                {sectors.map((value: string) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
@@ -177,7 +172,7 @@ export function CompaniesContent() {
                 onChange={(event) => setLocation(event.target.value)}
               >
                 <option value="">All</option>
-                {locations.map((value) => (
+                {locations.map((value: string) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
@@ -192,7 +187,7 @@ export function CompaniesContent() {
                 onChange={(event) => setTag(event.target.value)}
               >
                 <option value="">All</option>
-                {tags.map((value) => (
+                {tags.map((value: string) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
@@ -272,7 +267,7 @@ export function CompaniesContent() {
                   <td>{company.location}</td>
                   <td>{formatDate(company.lastSignalAt)}</td>
                   <td>
-                    {company.tags.map((item) => (
+                    {company.tags.map((item: string) => (
                       <span key={item} className="tag">
                         {item}
                       </span>
@@ -285,5 +280,13 @@ export function CompaniesContent() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function CompaniesContent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CompaniesContentInner />
+    </Suspense>
   );
 }
