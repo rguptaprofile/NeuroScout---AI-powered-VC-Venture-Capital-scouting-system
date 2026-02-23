@@ -3,9 +3,19 @@
 import { Suspense, useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { loadSavedSearches, saveSavedSearches } from "@/lib/savedSearches";
-import { companies, PAGE_SIZE, formatDate, unique } from "@/lib/companies";
-import type { Company, SavedSearch } from "@/lib/types";
+import { loadSavedSearches, saveSavedSearches } from "@/lib/storage";
+import { companies } from "@/data/companies";
+import type { Company, SavedSearch } from "@/types";
+
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toLocaleDateString();
+};
+
+const unique = (array: string[]): string[] => {
+  return [...new Set(array)];
+};
+
+const PAGE_SIZE = 10;
 
 function CompaniesContentInner() {
   const searchParams = useSearchParams();
@@ -68,7 +78,7 @@ function CompaniesContentInner() {
           .toLowerCase();
         return haystack.includes(search);
       })
-      .sort((a, b) => {
+      .sort((a: Company, b: Company) => {
         if (sortBy === "name") return a.name.localeCompare(b.name);
         return new Date(b.lastSignalAt).getTime() - new Date(a.lastSignalAt).getTime();
       });
